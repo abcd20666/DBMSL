@@ -1,0 +1,97 @@
+-- Create first table
+CREATE TABLE info (
+  rollno NUMBER(20),
+  name VARCHAR2(20),
+  branch VARCHAR2(20)
+);
+
+-- Create second table
+CREATE TABLE info1 (
+  rollno NUMBER(20),
+  name VARCHAR2(20),
+  branch VARCHAR2(20)
+);
+
+-- Insert sample data into info
+INSERT INTO info VALUES (1, 'Om', 'Computer');
+INSERT INTO info VALUES (2, 'Raj', 'Mech');
+INSERT INTO info VALUES (3, 'Sai', 'ECE');
+
+-- Insert sample data into info1
+INSERT INTO info1 VALUES (5, 'Rahul', 'IT');
+INSERT INTO info1 VALUES (2, 'Raj', 'Mech');
+INSERT INTO info1 VALUES (6, 'Pravin', 'Comp');
+
+-- Display initial data
+SELECT * FROM info;
+SELECT * FROM info1;
+
+DECLARE
+  rn info.rollno%TYPE;
+  nm info.name%TYPE;
+  br info.branch%TYPE;
+  CURSOR c_info IS
+    SELECT * FROM info
+    MINUS
+    SELECT * FROM info1;
+BEGIN
+  OPEN c_info;
+  LOOP
+    FETCH c_info INTO rn, nm, br;
+    EXIT WHEN c_info%NOTFOUND;
+    INSERT INTO info1 VALUES (rn, nm, br);
+  END LOOP;
+  CLOSE c_info;
+  DBMS_OUTPUT.PUT_LINE('Records successfully copied from info to info1!');
+END;
+/
+
+-- Display final data in both tables
+SELECT * FROM info;
+SELECT * FROM info1;
+
+
+==========================================================================
+
+CREATE TABLE info(rollno NUMBER(20), name VARCHAR2(20), branch VARCHAR2(20));
+CREATE TABLE info1(rollno NUMBER(20), name VARCHAR2(20), branch VARCHAR2(20));
+
+INSERT INTO info VALUES (1, 'Om', 'Computer');
+INSERT INTO info VALUES (2, 'Raj', 'Mech');
+INSERT INTO info VALUES (3, 'Sai', 'ECE');
+
+INSERT INTO info1 VALUES (5, 'Rahul', 'IT');
+INSERT INTO info1 VALUES (2, 'Raj', 'Mech');
+INSERT INTO info1 VALUES (6, 'Pravin', 'Comp');
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+  rn info.rollno%TYPE;
+  nm info.name%TYPE;
+  br info.branch%TYPE;
+
+  -- Parameterized cursor: takes roll number as parameter
+  CURSOR c_info(p_rollno info.rollno%TYPE) IS
+    SELECT rollno, name, branch 
+    FROM info
+    WHERE rollno = p_rollno
+      AND rollno NOT IN (SELECT rollno FROM info1);
+
+BEGIN
+  -- Loop through each record in info
+  FOR rec IN (SELECT rollno FROM info) LOOP
+    OPEN c_info(rec.rollno);
+    FETCH c_info INTO rn, nm, br;
+    IF c_info%FOUND THEN
+      INSERT INTO info1 VALUES (rn, nm, br);
+      DBMS_OUTPUT.PUT_LINE('Inserted Roll No: ' || rn);
+    END IF;
+    CLOSE c_info;
+  END LOOP;
+
+  DBMS_OUTPUT.PUT_LINE('Data merged successfully.');
+END;
+/
+
+select * from info1;

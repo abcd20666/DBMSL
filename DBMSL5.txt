@@ -1,0 +1,76 @@
+SQL> CREATE TABLE Student (
+  2    RollNo NUMBER PRIMARY KEY,
+  3    Name VARCHAR2(20),
+  4    Total_Marks NUMBER
+  5  );
+
+
+SQL> CREATE TABLE Result (
+  2    RollNo NUMBER PRIMARY KEY,
+  3    Name VARCHAR2(20),
+  4    Class VARCHAR2(30)
+  5  );
+
+
+
+SQL> INSERT INTO Student VALUES (13, 'A', 990);
+
+
+SQL> INSERT INTO Student VALUES (14, 'B', 900);
+
+
+SQL> INSERT INTO Student VALUES (4, 'C', 999);
+
+
+SQL> INSERT INTO Result VALUES (13, 'A', NULL);
+
+
+SQL> INSERT INTO Result VALUES (14, 'B', NULL);
+
+
+SQL> INSERT INTO Result VALUES (4, 'C', NULL);
+
+
+SQL> COMMIT;
+
+
+SQL> select * from student;
+
+SQL> select * from result;
+
+SQL> CREATE OR REPLACE PROCEDURE proc_Grade(roll IN NUMBER)
+  2  AS
+  3    t Student.Total_Marks%TYPE;
+  4  BEGIN
+  5    SELECT Total_Marks INTO t FROM Student WHERE RollNo = roll;
+  6
+  7    IF (t <= 1500 AND t >= 990) THEN
+  8      UPDATE Result SET Class = 'Distinction' WHERE RollNo = roll;
+  9      DBMS_OUTPUT.PUT_LINE(roll || ' - Distinction');
+ 10
+ 11    ELSIF (t <= 989 AND t >= 900) THEN
+ 12      UPDATE Result SET Class = 'First Class' WHERE RollNo = roll;
+ 13      DBMS_OUTPUT.PUT_LINE(roll || ' - First Class');
+ 14
+ 15    ELSIF (t <= 899 AND t >= 825) THEN
+ 16      UPDATE Result SET Class = 'Higher Second Class' WHERE RollNo = roll;
+ 17      DBMS_OUTPUT.PUT_LINE(roll || ' - Higher Second Class');
+ 18
+ 19    ELSE
+ 20      UPDATE Result SET Class = 'Pass' WHERE RollNo = roll;
+ 21      DBMS_OUTPUT.PUT_LINE(roll || ' - Pass');
+ 22    END IF;
+ 23  END;
+ 24  /
+
+
+SQL> BEGIN
+  2    proc_Grade(13);
+  3    proc_Grade(14);
+  4    proc_Grade(4);
+  5  END;
+  6  /
+
+
+SQL> select * from result;
+

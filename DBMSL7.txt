@@ -1,0 +1,103 @@
+package Connect;
+
+import java.sql.*;
+
+class ConnectivityCRUD {
+    public static void main(String[] args) {
+        try {
+            System.out.println("Welcome...");
+
+            // Load MySQL driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Connect to database
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/stud", "root", "root");
+
+            Statement stmt = con.createStatement();
+
+            // --- ADD a new record ---
+            String insertSql = "INSERT INTO stud(Rollno, Name, Branch, Percent) " +
+                               "VALUES(21, 'Rahul', 'IT', 75)";
+            int rowsInserted = stmt.executeUpdate(insertSql);
+            System.out.println(rowsInserted + " row(s) inserted.");
+
+            // --- EDIT a record ---
+            String updateSql = "UPDATE stud SET Name='Rohan', Percent=80 WHERE Rollno=21";
+            int rowsUpdated = stmt.executeUpdate(updateSql);
+            System.out.println(rowsUpdated + " row(s) updated.");
+
+            // --- DELETE a record ---
+            String deleteSql = "DELETE FROM stud WHERE Rollno=21";
+            int rowsDeleted = stmt.executeUpdate(deleteSql);
+            System.out.println(rowsDeleted + " row(s) deleted.");
+
+            // --- VIEW all records ---
+            ResultSet rs = stmt.executeQuery("SELECT * FROM stud");
+            System.out.println("\nRollNo\tName\tBranch\tPercent");
+            while (rs.next()) {
+                System.out.println(rs.getInt(1) + "\t" +
+                                   rs.getString(2) + "\t" +
+                                   rs.getString(3) + "\t" +
+                                   rs.getInt(4));
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+============================================================================================
+
+CREATE DATABASE IF NOT EXISTS abc;
+use abc;
+CREATE TABLE stud (
+    Rollno INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Branch VARCHAR(50),
+    Percent INT
+);
+
+SELECT * FROM stud;
+=============================================================================================
+
+package Connect;
+
+import java.sql.*;
+
+class Coonectivity{
+	public static void main(String args[])
+	{
+	
+  try{
+	System.out.println("welcome....");
+	Class.forName("com.mysql.jdbc.Driver");
+	Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/stud","root","root"); 
+	Statement stmt = con.createStatement();
+	ResultSet rs = stmt.executeQuery("Select * from stud");
+
+	while(rs.next())	
+	{
+		System.out.println(rs.getInt(1)+"\t"+rs.getString(2)+"\t"+rs.getString(3)+"\t"+rs.getInt(4));
+	}
+String sql = "insert into stud(Rollno, Name, Branch, Percent) values(20, 'Abhinav', 'Computer', 65)";
+int rows = stmt.executeUpdate(sql);
+System.out.println(rows);
+con.close();
+
+}catch(Exception e)
+{
+e.printStackTrace();
+//System.out.println(e.getMessage());
+}
+}
+}
+
+//http://www.coderanch.com/t/525565/JDBC/databases/MySQL-Connector
+
+

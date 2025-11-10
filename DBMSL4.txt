@@ -1,0 +1,51 @@
+
+SQL> create table borr(ROLLNO number(38) NOT NULL, NAME varchar2(20), DOI DATE, NOB varchar2(20), STATUS varchar2(20));
+
+
+SQL> create table f(ROLLNO number(38), DOR DATE, AMT number(38));
+
+
+SQL> insert into borr values (1,'shyam',to_date('20250725','yyyymmdd'), 'CN','I');
+
+
+SQL> insert into borr values (2,'ram',to_date('20250701','yyyymmdd'), 'dbms','I');
+
+SQL> insert into borr values (3,'geeta',to_date('20250515','yyyymmdd'), 'dbms','I');
+
+SQL> insert into borr values (4,'seeta',to_date('20240501','yyyymmdd'), 'SEPM','I');
+
+SQL> insert into borr values (5,'rahul',to_date('20130701','yyyymmdd'), 'SEPM','I');
+
+SQL> insert into borr values (6,'ganesh',to_date('20130619','yyyymmdd'), 'SEPM','I');
+
+SQL> create or replace procedure book(r in number)
+  2  as
+  3  c number;
+  4  begin
+  5  select to_number(trunc(sysdate-doi)) into c from Borr  where rollno=r;
+  6  if c >=15 and c<=30 then
+  7  c:=c-15;
+  8  insert into f values (r,sysdate,'');
+  9  update f set amt=c*5 where rollno=r;
+ 10  elsif c>30 then
+ 11  c:=c-30;
+ 12  insert into f values (r,sysdate,'');
+ 13  update f set amt=(c*50)+75 where rollno=r;
+ 14  end if;
+ 15
+ 16  update Borr set status='R' where rollno=r;
+ 17  EXCEPTION
+ 18  WHEN no_data_found THEN
+ 19  dbms_output.put_line('No such Rollno !');
+ 20  end;
+ 21  /
+
+SQL> Execute book(6);
+
+SQL> select * from fine;
+
+SQL> select * from f;
+
+SQL> select * from borr;
+
+ 

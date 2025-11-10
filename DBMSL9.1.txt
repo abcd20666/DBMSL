@@ -1,0 +1,119 @@
+
+// =============================================
+// (A) — AGGREGATION PRACTICAL
+// =============================================
+
+// Step 1 — Create / Switch Database
+use collegeDB
+
+// Step 2 — Insert Sample Documents
+db.student.insertMany([
+  { rollno: 1, name: "Amit", subject: "DBMS", marks: 85 },
+  { rollno: 2, name: "Sneha", subject: "DBMS", marks: 78 },
+  { rollno: 3, name: "Rohan", subject: "AI", marks: 92 },
+  { rollno: 4, name: "Tanu", subject: "AI", marks: 88 },
+  { rollno: 5, name: "Karan", subject: "OOP", marks: 75 },
+  { rollno: 6, name: "Riya", subject: "OOP", marks: 80 }
+])
+
+// Step 3 — Display All Documents
+db.student.find().pretty()
+
+// =============================================
+// Step 4 — AGGREGATION FUNCTIONS
+// =============================================
+
+// (1) Minimum Marks per Subject
+db.student.aggregate([
+  { $group: { _id: "$subject", min_marks: { $min: "$marks" } } }
+])
+
+// (2) Maximum Marks per Subject
+db.student.aggregate([
+  { $group: { _id: "$subject", max_marks: { $max: "$marks" } } }
+])
+
+// (3) Total Marks per Subject
+db.student.aggregate([
+  { $group: { _id: "$subject", total_marks: { $sum: "$marks" } } }
+])
+
+// (4) Average Marks per Subject
+db.student.aggregate([
+  { $group: { _id: "$subject", avg_marks: { $avg: "$marks" } } }
+])
+
+// (5) First Student in Each Subject
+db.student.aggregate([
+  { $group: { _id: "$subject", first_student: { $first: "$name" } } }
+])
+
+// (6) Last Student in Each Subject
+db.student.aggregate([
+  { $group: { _id: "$subject", last_student: { $last: "$name" } } }
+])
+================================================================================
+
+
+// =============================================
+// (B) — INDEXING PRACTICAL
+// =============================================
+
+// Step 1 — Create / Switch Database
+use studentDB
+
+// Step 2 — Insert Sample Data
+db.student.insertMany([
+  { rollno: 1, name: "Amit", subject: "DBMS", marks: 85 },
+  { rollno: 2, name: "Sneha", subject: "DBMS", marks: 78 },
+  { rollno: 3, name: "Rohan", subject: "AI", marks: 92 },
+  { rollno: 4, name: "Tanu", subject: "AI", marks: 88 },
+  { rollno: 5, name: "Karan", subject: "OOP", marks: 75 },
+  { rollno: 6, name: "Riya", subject: "OOP", marks: 80 }
+])
+
+// Step 3 — Display All Records
+db.student.find().pretty()
+
+// =============================================
+// Step 4 — INDEXING FUNCTIONS
+// =============================================
+
+// (1) Create Index on Name (Ascending)
+db.student.createIndex({ name: 1 })
+
+// (2) Create Compound Index on Subject and Marks
+db.student.createIndex({ subject: 1, marks: -1 })
+
+// (3) Create Index using ensureIndex (older syntax)
+db.student.ensureIndex({ rollno: 1 })
+
+// (4) View All Indexes
+db.student.getIndexes()
+
+// (5) Show Index Size Before Drop
+print("Total Index Size (Before Drop):", db.student.stats().totalIndexSize, "bytes")
+
+// (6) Minimum Marks (Ascending Sort)
+db.student.find().sort({ marks: 1 }).limit(1)
+
+// (7) Maximum Marks (Descending Sort)
+db.student.find().sort({ marks: -1 }).limit(1)
+
+// (8) Sort Names Ascending
+db.student.find().sort({ name: 1 })
+
+// (9) Sort Names Descending
+db.student.find().sort({ name: -1 })
+
+// (10) Explain Query Execution Plan (shows index usage)
+db.student.find().explain()
+
+// (11) Get Detailed Stats (shows index sizes)
+db.student.stats()
+
+// (12) Drop Specific Index (example: drop index on name)
+db.student.dropIndex("name_1")
+
+// (13) Show Index Size After Drop
+print("Total Index Size (After Drop):", db.student.stats().totalIndexSize, "bytes")
